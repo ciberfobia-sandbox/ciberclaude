@@ -21,29 +21,31 @@ Reinicia Claude Code después de instalar.
 El statusline ocupa **dos líneas** en la parte inferior de Claude Code:
 
 ```
-⚡ Opus  ·  ████████░░ 78%  ·  $0.0312  ·  📁 ciberfobia-os (main)
-   🤖 frontend-developer  ·  ⏱ 5m00s  ·  5h:82%  ·  7d:41%
+⚡ Sonnet  ·  ████████░░ 78%  ·  $0.0312  ·  📁 ciberfobia-os (main)  ·  🔓 auto
+💚 · ⏳ 5h 82%  ·  📅 7d 41%  ·  🤖 frontend-developer
 ```
 
 ### Línea 1 — siempre visible
 
 | Elemento | Descripción |
 |----------|-------------|
-| `⚡ Opus` | Modelo activo: Opus, Sonnet o Haiku |
+| `⚡ Sonnet` | Modelo activo: Opus, Sonnet o Haiku |
 | `████████░░ 78%` | Uso del contexto. Verde `<50%` → Amarillo `≥50%` → Rojo `≥80%` |
 | `$0.0312` | Coste acumulado de la sesión en USD |
 | `📁 proyecto` | Nombre del directorio de trabajo actual |
 | `(main)` | Rama git activa (solo si el directorio es un repo git) |
+| `🔓 auto` | Solo aparece cuando el modo de permisos es `auto-approve` |
 
-### Línea 2 — solo si hay algo que mostrar
+### Línea 2 — siempre visible
 
-| Elemento | Cuándo aparece |
-|----------|----------------|
-| `🤖 agente` | Cuando hay un agente especializado activo |
-| `⏱ 5m00s` | Duración de la sesión (cuando es > 0) |
-| `5h:82%  ·  7d:41%` | Rate limits de uso (solo cuando alguno supera el **50%**). Amarillo `≥50%`, Rojo `≥80%` |
+| Elemento | Descripción |
+|----------|-------------|
+| `❤️` / `🧡` / `💛` / `💚` / `💙` / `💜` / `🩷` | Corazón animado: rota de color cada 20 segundos |
+| `⏳ 5h 82%` | Rate limit de la ventana de 5 horas. Amarillo `≥50%`, Rojo `≥80%`, tenue si está bajo |
+| `📅 7d 41%` | Rate limit de los últimos 7 días. Mismos umbrales de color |
+| `🤖 agente` | Agente especializado activo. Si hay varios: `🤖 3 agentes` |
 
-> La línea 2 desaparece completamente si no hay agente activo, la sesión acaba de empezar y los rate limits están bajos. Sin ruido innecesario.
+> Los rate limits siempre se muestran cuando hay datos disponibles (no solo cuando superan un umbral).
 
 ---
 
@@ -100,6 +102,8 @@ Claude Code ejecuta el script tras cada respuesta del asistente. Le envía un JS
 ```
 Claude Code  →  JSON (stdin)  →  ciberclaude.sh  →  texto ANSI (stdout)  →  barra inferior
 ```
+
+**El corazón animado** rota entre 7 colores (❤️ 🧡 💛 💚 💙 💜 🩷) sin ningún proceso en segundo plano. Cada vez que el script se ejecuta calcula `$(date +%s) / 20 % 7` para determinar el color actual. Sin timers, sin estado persistente — 100% determinista a partir del timestamp del sistema.
 
 **El script corre 100% local.** No hace peticiones externas, no accede a credenciales, no requiere permisos de administrador, no modifica nada fuera de `~/.claude/`.
 

@@ -75,14 +75,14 @@ L1="${L1}${SEP}${DIM}${COST_FMT}${R}"
 L1="${L1}${SEP}📁 ${PROJECT}"
 [ -n "$GIT_BRANCH" ] && L1="${L1}${DIM} (${GIT_BRANCH})${R}"
 
-# ── Línea 2: agente · duración · rate limits (si superan 50%) ─
-L2=""
+# ── Línea 2: hora · agente · duración · rate limits ──────────
+NOW=$(date '+%H:%M')
+L2="${DIM}${NOW}${R}"
 
-[ -n "$AGENT" ] && L2="🤖 ${AGENT}"
+[ -n "$AGENT" ] && L2="${L2}${SEP}🤖 ${AGENT}"
 
 if [ -n "$DUR_FMT" ]; then
-  [ -n "$L2" ] && L2="${L2}${SEP}"
-  L2="${L2}${DIM}⏱ ${DUR_FMT}${R}"
+  L2="${L2}${SEP}${DIM}⏱ ${DUR_FMT}${R}"
 fi
 
 # Rate limits: solo se muestran si alguno supera el 50%
@@ -90,7 +90,7 @@ if [ -n "$FIVE_H" ] && [ -n "$SEVEN_D" ]; then
   FH=$(printf '%.0f' "$FIVE_H")
   SD=$(printf '%.0f' "$SEVEN_D")
   if [ "$FH" -ge 50 ] || [ "$SD" -ge 50 ]; then
-    [ -n "$L2" ] && L2="${L2}${SEP}"
+    L2="${L2}${SEP}"
     [ "$FH" -ge 80 ] && C5="$RED" || C5="$YELLOW"
     [ "$SD" -ge 80 ] && C7="$RED" || C7="$YELLOW"
     L2="${L2}${C5}5h:${FH}%${R}${DIM} · ${R}${C7}7d:${SD}%${R}"
@@ -99,4 +99,4 @@ fi
 
 # ── Output ────────────────────────────────────────────────────
 printf '%b\n' "$L1"
-[ -n "$L2" ] && printf '%b\n' "   ${L2}"
+printf '%b\n' "   ${L2}"
